@@ -2,10 +2,10 @@
 
 import { Headline } from "@/app/components/headline";
 
-export default function Home() {
+export default function RhfCtrl() {
   return (
     <>
-      <Headline title="Zod Validation" />
+      <Headline title="React Hook Form - Pure w/ Controller" />
     </>
   );
 }

@@ -2,10 +2,10 @@
 
 import { Headline } from "@/app/components/headline";
 
-export default function Home() {
+export default function Yup() {
   return (
     <>
-      <Headline title="Zod Validation" />
+      <Headline title="Yup Validation" />
     </>
   );
 }

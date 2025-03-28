@@ -24,3 +24,22 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.center-container {
+  box-sizing: border-box;
+  margin: 0 auto 15px;
+  max-width: 978px;
+}
+
+.input-textfield {
+  border: 1px solid #0a0a0a;
+  padding: 0.245rem;
+}
+
+.input-select {
+  border: 1px solid #0a0a0a;
+  padding: 0.245rem;
+}
+.error-message {
+  color: red;
+}
