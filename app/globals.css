@@ -25,6 +25,21 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+fieldset {
+  border: 1px solid black;
+  padding: 0.625em;
+  display: flex;
+  gap: 10px;
+}
+
+legend {
+  padding-inline: 0.35em;
+}
+
+input[type="radio"] {
+  margin-right: 0.625em;
+}
+
 .center-container {
   box-sizing: border-box;
   margin: 0 auto 15px;
