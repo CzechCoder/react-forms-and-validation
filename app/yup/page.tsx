@@ -17,10 +17,10 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 import { SubmitResponse } from "@/app/components/submit-response";
 import { Headline } from "@/app/components/headline";
-import * as yup from "yup";
 
 type Inputs = {
   userName: string;
@@ -91,11 +91,11 @@ export default function Yup() {
 
   const onSubmit = (data: Inputs) => {
     console.log(data);
-    // if (data.citizenship === "nonEuUsa") {
-    //   setIsValidCitizen(false);
-    // }
-    // setIsSubmitted(true);
-    // reset();
+    if (data.citizenship === "nonEuUsa") {
+      setIsValidCitizen(false);
+    }
+    setIsSubmitted(true);
+    reset();
   };
 
   const onErrorClick = () => {
@@ -109,7 +109,7 @@ export default function Yup() {
 
   return (
     <>
-      <Headline title="Zod validation" />
+      <Headline title="Yup validation" />
       <div className="center-container">
         {isSubmitted && !isValidCitizen && (
           <SubmitResponse
