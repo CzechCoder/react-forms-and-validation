@@ -1,12 +1,11 @@
 "use client";
 
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Button, Stack, Typography } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
+import { Button } from "@mui/material";
+import { useState } from "react";
 
 import { Headline } from "@/app/components/headline";
-import { useState } from "react";
+import { SubmitResponse } from "@/app/components/submit-response";
 
 type Inputs = {
   userName: string;
@@ -17,6 +16,7 @@ type Inputs = {
   email: string;
   citizenship: string;
   validPassport: string;
+  acceptTerms: boolean;
 };
 
 export default function Rhf() {
@@ -25,7 +25,6 @@ export default function Rhf() {
   const {
     register,
     handleSubmit,
-    watch,
     reset,
     formState: { errors },
   } = useForm<Inputs>({
@@ -35,6 +34,7 @@ export default function Rhf() {
       age: 20,
       citizenship: "",
       validPassport: "",
+      acceptTerms: false,
     },
   });
 
@@ -47,43 +47,33 @@ export default function Rhf() {
     reset();
   };
 
-  console.log(errors);
+  const errorOnclick = () => () => {
+    setIsValidCitizen(true);
+    setIsSubmitted(false);
+  };
+
+  const onSuccessClick = () => {
+    setIsSubmitted(false);
+  };
 
   return (
     <>
       <Headline title="React Hook Form - Pure" />
       <div className="center-container">
         {isSubmitted && !isValidCitizen && (
-          <div className="text-center">
-            <CloseIcon color="error" sx={{ fontSize: "8rem" }} />
-            <Typography variant="h4">
-              Thank you for submitting! Unfortunately, registration is only
-              possible for citizens of EU or USA.
-            </Typography>
-            <Button
-              variant="contained"
-              onClick={() => {
-                setIsValidCitizen(true);
-                setIsSubmitted(false);
-              }}
-              sx={{ mt: 5 }}
-            >
-              Start over
-            </Button>
-          </div>
+          <SubmitResponse
+            type="error"
+            text="Registration unsuccessful! Unfortunately, registration is only
+                        possible for citizens of EU or USA."
+            onClick={errorOnclick}
+          />
         )}
         {isSubmitted && isValidCitizen && (
-          <div className="text-center">
-            <CheckIcon color="success" sx={{ fontSize: "8rem" }} />
-            <Typography variant="h4">Thank you for submitting!</Typography>
-            <Button
-              variant="contained"
-              onClick={() => setIsSubmitted(false)}
-              sx={{ mt: 5 }}
-            >
-              Start over
-            </Button>
-          </div>
+          <SubmitResponse
+            type="success"
+            text="Registration successful. Thank you for submitting!"
+            onClick={onSuccessClick}
+          />
         )}
         {!isSubmitted && (
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -93,12 +83,12 @@ export default function Rhf() {
                 id="userName"
                 type="text"
                 className="input-textfield"
-                placeholder="User name"
+                placeholder="Enter your user name"
                 {...register("userName", {
                   required: "User name is required",
                   maxLength: {
                     value: 20,
-                    message: "User name cannot be longer than 20 characters.",
+                    message: "User name cannot be longer than 20 characters",
                   },
                 })}
                 aria-invalid={errors.userName ? "true" : "false"}
@@ -112,17 +102,17 @@ export default function Rhf() {
                 id="password"
                 type="text"
                 className="input-textfield"
-                placeholder="Password"
+                placeholder="Enter your desired password"
                 {...register("password", {
                   required: "Password is required",
                   minLength: {
                     value: 8,
-                    message: "Password must be at least 8 characters.",
+                    message: "Password must be at least 8 characters",
                   },
                   pattern: {
                     value: /^(?=.*[A-Z])(?=.*\d).+$/,
                     message:
-                      "Password needs to have at least one capital letter",
+                      "Password needs to have at least one capital letter and a number",
                   },
                 })}
                 aria-invalid={errors.password ? "true" : "false"}
@@ -136,16 +126,16 @@ export default function Rhf() {
                 id="firstName"
                 type="text"
                 className="input-textfield"
-                placeholder="First name"
+                placeholder="Enter your first name"
                 {...register("firstName", {
                   required: "First name is required",
                   minLength: {
                     value: 2,
-                    message: "First name must be at least 2 characters long.",
+                    message: "First name must be at least 2 characters long",
                   },
                   maxLength: {
                     value: 60,
-                    message: "First name cannot be longer than 60 characters.",
+                    message: "First name cannot be longer than 60 characters",
                   },
                 })}
                 aria-invalid={errors.firstName ? "true" : "false"}
@@ -159,16 +149,16 @@ export default function Rhf() {
                 id="lastName"
                 type="text"
                 className="input-textfield"
-                placeholder="Last name"
+                placeholder="Enter your last name"
                 {...register("lastName", {
                   required: "Last name is required",
                   minLength: {
                     value: 2,
-                    message: "Last name must be at least 2 characters long.",
+                    message: "Last name must be at least 2 characters long",
                   },
                   maxLength: {
                     value: 60,
-                    message: "Last name cannot be longer than 60 characters.",
+                    message: "Last name cannot be longer than 60 characters",
                   },
                 })}
                 aria-invalid={errors.lastName ? "true" : "false"}
@@ -184,14 +174,14 @@ export default function Rhf() {
                 className="input-textfield"
                 placeholder="Age"
                 {...register("age", {
-                  required: "Please enter your age.",
+                  required: "Enter your age",
                   min: {
                     value: 18,
-                    message: "You need to be at least 18 years old.",
+                    message: "You need to be at least 18 years old",
                   },
                   max: {
                     value: 99,
-                    message: "Maximum age allowed is 99 years old.",
+                    message: "Maximum age allowed is 99 years old",
                   },
                 })}
                 aria-invalid={errors.age ? "true" : "false"}
@@ -200,15 +190,16 @@ export default function Rhf() {
                 {errors.age?.message}
               </p>
 
+              <label htmlFor="email">Email</label>
               <input
                 type="text"
                 className="input-textfield"
-                placeholder="Email"
+                placeholder="Enter your email"
                 {...register("email", {
                   required: "Email is required",
                   pattern: {
                     value: /\S+@\S+\.\S+/,
-                    message: "Please enter a valid email",
+                    message: "Enter a valid email",
                   },
                 })}
                 aria-invalid={errors.email ? "true" : "false"}
@@ -221,12 +212,12 @@ export default function Rhf() {
               <select
                 id="citizenship"
                 {...register("citizenship", {
-                  required: "Please select another option",
+                  required: "Select your citizenship",
                 })}
                 className="input-select"
                 aria-invalid={errors.age ? "true" : "false"}
               >
-                <option value="">Please select your citizenship</option>
+                <option value="">Select your citizenship</option>
                 <option value="EU">I am a EU citizen</option>
                 <option value="USA">I am a USA citizen</option>
                 <option value="nonEuUsa">
@@ -242,7 +233,7 @@ export default function Rhf() {
                 <label htmlFor="passportYes">
                   <input
                     {...register("validPassport", {
-                      required: "Please select one option",
+                      required: "Select one option",
                     })}
                     type="radio"
                     value="yes"
@@ -253,7 +244,7 @@ export default function Rhf() {
                 <label htmlFor="passportNo">
                   <input
                     {...register("validPassport", {
-                      required: "Please select one option",
+                      required: "Select one option",
                     })}
                     type="radio"
                     value="no"
@@ -264,6 +255,25 @@ export default function Rhf() {
               </fieldset>
               <p role="alert" className="error-message">
                 {errors.validPassport?.message}
+              </p>
+
+              <div>
+                <input
+                  type="checkbox"
+                  id="acceptTerms"
+                  {...register("acceptTerms", {
+                    required:
+                      "Registration cannot continue without your consent",
+                  })}
+                  style={{ marginRight: "10px" }}
+                />
+                <label htmlFor="acceptTerms">
+                  I consent to the company to store my information provided in
+                  this form.
+                </label>
+              </div>
+              <p role="alert" className="error-message">
+                {errors.acceptTerms?.message}
               </p>
 
               <Button type="submit" variant="contained">
