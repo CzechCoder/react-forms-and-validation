@@ -29,9 +29,12 @@ export default function Rhf() {
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
+      userName: "",
+      password: "",
       firstName: "",
       lastName: "",
       age: 20,
+      email: "",
       citizenship: "",
       validPassport: "",
       acceptTerms: false,
@@ -174,6 +177,7 @@ export default function Rhf() {
                 className="input-textfield"
                 placeholder="Age"
                 {...register("age", {
+                  valueAsNumber: true,
                   required: "Enter your age",
                   min: {
                     value: 18,

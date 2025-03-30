@@ -17,7 +17,7 @@ const links = [
     icon: CurrencyYenIcon,
   },
   { name: "React Hook Form", href: "/rhf", icon: ChecklistIcon },
-  { name: "RHF & controller", href: "/rhfctrl", icon: ChecklistRtlIcon },
+  { name: "RHF & Controller", href: "/rhfctrl", icon: ChecklistRtlIcon },
   {
     name: "RHF backend validated",
     href: "/rhfbackend",

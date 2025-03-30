@@ -36,16 +36,18 @@ export default function RhfCtrl() {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isValidCitizen, setIsValidCitizen] = useState<boolean>(true);
   const {
-    register,
     handleSubmit,
     reset,
     control,
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
+      userName: "",
+      password: "",
       firstName: "",
       lastName: "",
       age: 20,
+      email: "",
       citizenship: "",
       validPassport: "",
       acceptTerms: false,
@@ -69,8 +71,6 @@ export default function RhfCtrl() {
   const onSuccessClick = () => {
     setIsSubmitted(false);
   };
-
-  console.log(errors);
 
   return (
     <>
@@ -253,6 +253,7 @@ export default function RhfCtrl() {
                       placeholder="Enter your age"
                       value={field.value || ""}
                       slotProps={{ htmlInput: { min: 0 } }}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   )}
                 />
