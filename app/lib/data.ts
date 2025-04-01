@@ -1,4 +1,6 @@
-"use client";
+"use server";
+
+import { Pool } from "pg";
 
 import { Inputs } from "@/app/rhfbackend/page";
 
@@ -6,17 +8,9 @@ interface ErrorMsg {
   [key: string]: string;
 }
 
-// userName: "",
-// password: "",
-// firstName: "",
-// lastName: "",
-// age: 20,
-// email: "",
-// citizenship: "",
-// validPassport: "",
-// acceptTerms: false,
-
-// try to use server actions instead and query DB right here?
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
 export const registerUser = async (data: Inputs) => {
   const {
@@ -34,25 +28,39 @@ export const registerUser = async (data: Inputs) => {
   let errorMsgs: ErrorMsg = {};
 
   try {
-    const response = await fetch(
-      `/api/create-user?userName=${userName}&email=${email}&password=${password}`
-    );
-    const data = await response.json();
-
-    console.log(data);
-
-    if (!response.ok) throw new Error(data.message || "Validation failed");
-
-    if (!data.userNameValid)
-      errorMsgs = {
+    if (!userName || !email) {
+      return (errorMsgs = {
         ...errorMsgs,
-        userName: "This user name is already taken.",
-      };
-    if (!data.emailValid)
-      errorMsgs = { ...errorMsgs, email: "This email is already registered." };
+        message: "Name and Email are required.",
+      });
+    }
 
-    return errorMsgs ? errorMsgs : true;
+    const result = await pool.query(
+      "SELECT username, email FROM users WHERE username = $1 OR email = $2",
+      [userName, email]
+    );
+
+    result.rows.forEach((row) => {
+      if (row.username === userName) {
+        errorMsgs = {
+          ...errorMsgs,
+          userName: "This user name is already taken.",
+        };
+      }
+      if (row.email === email) {
+        errorMsgs = {
+          ...errorMsgs,
+          email: "This email is already registered.",
+        };
+      }
+    });
+
+    return Object.keys(errorMsgs).length > 0 ? errorMsgs : true;
   } catch (error) {
-    return { general: "Server error, please try again." };
+    console.error("Database Error:", error);
+    return (errorMsgs = {
+      ...errorMsgs,
+      general: "Server error, please try again.",
+    });
   }
 };

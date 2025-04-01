@@ -63,13 +63,12 @@ export default function RhfBackend() {
     if (data.citizenship === "nonEuUsa") {
       setIsValidCitizen(false);
       setIsSubmitted(true);
+      reset();
       return;
     }
     setIsSubmitting(true);
 
     const validationResult = await registerUser(data);
-
-    console.log(validationResult);
 
     if (validationResult !== true) {
       if (validationResult.userName)
@@ -85,8 +84,8 @@ export default function RhfBackend() {
     }
 
     setIsSubmitting(false);
-    // setIsSubmitted(true);
-    // reset();
+    setIsSubmitted(true);
+    reset();
   };
 
   const onErrorClick = () => {
@@ -102,8 +101,8 @@ export default function RhfBackend() {
     <>
       <Headline title="React Hook Form - Pure w/ Backend Validation" />
       <div className="w-full">
-        Validates if values already exist. Is submitting:{" "}
-        {isSubmitting.toString()}
+        Validates if user name "Tom" or email "tom@gmail.com" already exists in
+        the database.
       </div>
       <div className="center-container">
         {isSubmitted && !isValidCitizen && (
