@@ -1,6 +1,5 @@
 "use client";
 import { createTheme } from "@mui/material/styles";
-import tailwindColors from "tailwindcss/colors";
 
 declare module "@mui/material/styles" {
   interface TypographyVariants {

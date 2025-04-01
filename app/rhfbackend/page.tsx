@@ -439,7 +439,7 @@ export default function RhfBackend() {
                 </FormHelperText>
               </div>
 
-              <Button type="submit" variant="contained">
+              <Button type="submit" variant="contained" disabled={isSubmitting}>
                 Submit
               </Button>
             </div>

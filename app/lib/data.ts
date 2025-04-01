@@ -13,6 +13,7 @@ const pool = new Pool({
 });
 
 export const registerUser = async (data: Inputs) => {
+  // destructuralize for the case of actually saving the data to DB
   const {
     userName,
     password,
