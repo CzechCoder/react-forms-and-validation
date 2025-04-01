@@ -1,6 +1,6 @@
 "use client";
 
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
   Button,
   Checkbox,
@@ -19,8 +19,9 @@ import { useState } from "react";
 
 import { SubmitResponse } from "@/app/components/submit-response";
 import { Headline } from "@/app/components/headline";
+import { registerUser } from "@/app/lib/data";
 
-type Inputs = {
+export type Inputs = {
   userName: string;
   password: string;
   firstName: string;
@@ -35,11 +36,13 @@ type Inputs = {
 export default function RhfBackend() {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isValidCitizen, setIsValidCitizen] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const {
     handleSubmit,
     reset,
     control,
     formState: { errors },
+    setError,
   } = useForm<Inputs>({
     defaultValues: {
       userName: "",
@@ -54,13 +57,36 @@ export default function RhfBackend() {
     },
   });
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit = async (data: Inputs) => {
     console.log(data);
+
     if (data.citizenship === "nonEuUsa") {
       setIsValidCitizen(false);
+      setIsSubmitted(true);
+      return;
     }
-    setIsSubmitted(true);
-    reset();
+    setIsSubmitting(true);
+
+    const validationResult = await registerUser(data);
+
+    console.log(validationResult);
+
+    if (validationResult !== true) {
+      if (validationResult.userName)
+        setError("userName", {
+          type: "manual",
+          message: validationResult.userName,
+        });
+      if (validationResult.email)
+        setError("email", { type: "manual", message: validationResult.email });
+      if (validationResult.general) alert(validationResult.general);
+      setIsSubmitting(false);
+      return;
+    }
+
+    setIsSubmitting(false);
+    // setIsSubmitted(true);
+    // reset();
   };
 
   const onErrorClick = () => {
@@ -75,6 +101,10 @@ export default function RhfBackend() {
   return (
     <>
       <Headline title="React Hook Form - Pure w/ Backend Validation" />
+      <div className="w-full">
+        Validates if values already exist. Is submitting:{" "}
+        {isSubmitting.toString()}
+      </div>
       <div className="center-container">
         {isSubmitted && !isValidCitizen && (
           <SubmitResponse
